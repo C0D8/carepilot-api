@@ -1,0 +1,23 @@
+[default]
+
+SQLALCHEMY_DATABASE_URI = "@format mysql+pymysql://{env[MYSQLUSER]}:{env[MYSQLPASSWORD]}@{env[MYSQLHOST]}:{env[MYSQLPORT]}/{env[MYSQLDATABASE]}"
+
+SECRET_KEY = "sua_chave_secreta_aqui"
+TITLE = "casamed"
+SQLALCHEMY_TRACK_MODIFICATIONS = false
+PROPAGATE_EXCEPTIONS = true
+WTF_CSRF_CHECK_DEFAULT = false
+SECURITY_PASSWORD_SALT = 'salt'
+EXTENSIONS =[
+"carepilot_app.extensions.serializers",
+"carepilot_app.blueprints.restapi.controllers",
+"carepilot_app.extensions.db",
+"carepilot_app.extensions.commands"
+]
+
+[development]
+FLASK_DEBUG=true 
+
+[testing]
+SQLALCHEMY_DATABASE_URI = 'sqlite:///testing.db'
+TESTING = true
