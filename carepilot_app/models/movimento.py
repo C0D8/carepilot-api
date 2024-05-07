@@ -8,8 +8,8 @@ class Movimento(db.Model) :
     id = db.Column(db.Integer, primary_key=True)
     valor = db.Column(db.Float, nullable=False)
     data = db.Column(db.Date, nullable=False)
-    descricao = db.Column(db.String(255), nullable=False)
-    cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=False)
+    descricao = db.Column(db.String(255), nullable=True)
+    cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=True, default=1)
     produto_id = db.Column(db.Integer, db.ForeignKey('produto.id'), nullable=False)
 
 

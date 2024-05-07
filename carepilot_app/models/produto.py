@@ -9,8 +9,8 @@ class Produto(db.Model) :
     id = db.Column(db.Integer, primary_key=True)
     valor = db.Column(db.Float, nullable=False)
     data = db.Column(db.Date, nullable=False)
-    descricao = db.Column(db.String(255), nullable=False)
-    tipo = db.Column(db.String(255), nullable=False)
+    descricao = db.Column(db.String(255), nullable=True)
+    tipo = db.Column(db.String(255), nullable=True)
 
     def json(self):
         return {"id": self.id, "valor": self.valor, "data": self.data, "descricao": self.descricao, "tipo": self.tipo}

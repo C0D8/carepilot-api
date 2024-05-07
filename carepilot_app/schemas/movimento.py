@@ -7,3 +7,4 @@ class MovimentoSchema(ma.SQLAlchemyAutoSchema):
         model = Movimento
         load_instance = True
         unknown = 'exclude'
+        include_fk = True
