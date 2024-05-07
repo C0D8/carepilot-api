@@ -1,4 +1,5 @@
 from carepilot_app.extensions.db import db
+from carepilot_app.models.movimento import Movimento
 # from sqlalchemy.ext.mutable import MutableList
 # from flask_security import UserMixin, RoleMixin, AsaList
 
