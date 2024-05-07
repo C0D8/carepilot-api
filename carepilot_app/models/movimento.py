@@ -15,7 +15,7 @@ class Movimento(db.Model) :
 
 
     def json(self):
-        return {"id": self.id, "valor": self.valor, "data": self.data, "descricao": self.descricao, "cliente_id": self.cliente_id}
+        return {"id": self.id, "valor": self.valor, "data": self.data, "descricao": self.descricao, "cliente_id": self.cliente_id, "produto_id": self.produto_id, "quantidade": self.quantidade}
     
     @classmethod
     def find_by_id(cls, id):

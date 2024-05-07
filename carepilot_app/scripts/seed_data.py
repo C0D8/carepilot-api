@@ -20,16 +20,23 @@ def seed_data(df):
 
     #criar clientes
     clientes_unicos = df['cliente_id'].unique()
+    #quantidade de movimentos
+    quantidade = df['cliente_id'].value_counts()
+    #valor total
+    valor_total = df.groupby('cliente_id')['valor_total'].sum()
 
-# Crie um DataFrame com os códigos dos clientes únicos
+    # Crie um DataFrame com os códigos dos clientes únicos
     df_clientes = pd.DataFrame(clientes_unicos, columns=['id'])
+    df_clientes['quantidade'] = quantidade.values
+    df_clientes['valor_total'] = valor_total.values
+    
 
     print("CLIENTESSSSS")
     print(df_clientes)
 
     df_clientes.to_sql('cliente', con=db.engine, if_exists='append', index=False)
 
-    #criar produtos
+    # criar produtos
     produtos = df['produto_id'].unique()
 
 
@@ -63,5 +70,5 @@ def seed_data(df):
 
     
 
-    #inserir movimentos
+    # #inserir movimentos
 
