@@ -11,6 +11,7 @@ class Movimento(db.Model) :
     descricao = db.Column(db.String(255), nullable=True)
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=True, default=1)
     produto_id = db.Column(db.Integer, db.ForeignKey('produto.id'), nullable=False)
+    quantidade = db.Column(db.Integer, nullable=True, default=1)
 
 
     def json(self):
@@ -31,6 +32,11 @@ class Movimento(db.Model) :
     @classmethod
     def find_all(cls):
         return cls.query.all()
+    
+    @classmethod
+    def delete_all(cls):
+        cls.query.delete()
+        db.session.commit()
     
     def save_to_db(self):
         db.session.add(self)

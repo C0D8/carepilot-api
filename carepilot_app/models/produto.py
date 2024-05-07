@@ -8,7 +8,7 @@ class Produto(db.Model) :
 
     id = db.Column(db.Integer, primary_key=True)
     valor = db.Column(db.Float, nullable=False)
-    data = db.Column(db.Date, nullable=False)
+    data = db.Column(db.Date, nullable=True)
     descricao = db.Column(db.String(255), nullable=True)
     tipo = db.Column(db.String(255), nullable=True)
 
@@ -21,6 +21,11 @@ class Produto(db.Model) :
     @classmethod
     def find_all(cls):
         return cls.query.all()
+    
+    @classmethod
+    def delete_all(cls):
+        cls.query.delete()
+        db.session.commit()
     
     def save_to_db(self):
         db.session.add(self)

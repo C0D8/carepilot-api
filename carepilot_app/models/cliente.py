@@ -5,9 +5,9 @@ class Cliente(db.Model) :
     __tabelname__ = "cliente"
 
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(255), nullable=False)
-    cpf = db.Column(db.String(11), nullable=False)
-    data_nascimento = db.Column(db.Date, nullable=False)
+    nome = db.Column(db.String(255), nullable=True)
+    cpf = db.Column(db.String(11), nullable=True)
+    data_nascimento = db.Column(db.Date, nullable=True)
     movimentos = db.relationship('Movimento', backref='cliente', lazy=True)
                                  
     def json(self):
@@ -20,6 +20,12 @@ class Cliente(db.Model) :
     @classmethod
     def find_all(cls):
         return cls.query.all()
+    
+    @classmethod
+    def delete_all(cls):
+        cls.query.delete()
+        db.session.commit()
+        
     
     def save_to_db(self):
         db.session.add(self)
