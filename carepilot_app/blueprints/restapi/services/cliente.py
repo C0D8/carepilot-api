@@ -2,16 +2,31 @@ from carepilot_app.extensions.db import db #noqa
 from carepilot_app.models.cliente import Cliente
 from carepilot_app.schemas.cliente import ClienteSchema
 from carepilot_app.models.movimento import Movimento
+from carepilot_app.schemas.movimento import MovimentoSchema
+
 import pandas as pd
 
 list_clientes = ClienteSchema(many=True)
 cliente_schema = ClienteSchema()
+movimento_schema = MovimentoSchema()
+list_movimentos = MovimentoSchema(many=True)
 
 
 def get_clientes():
     clientes = Cliente.find_all()
     clientes = list_clientes.dump(clientes)
     return clientes
+
+
+def get_movimentos(cliente_id): 
+    cliente = Cliente.find_by_id(cliente_id)
+
+    if not cliente:
+        return {"message": "Cliente not found"}, 404
+
+    movimentos = cliente.movimentos
+    movimentos = list_movimentos.dump(movimentos)
+    return movimentos
 
 
 def get_cliente(cliente_id):

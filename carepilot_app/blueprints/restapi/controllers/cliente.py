@@ -1,6 +1,6 @@
 from flask_restx import Resource, Namespace
 from carepilot_app.extensions.auth import auth
-from carepilot_app.blueprints.restapi.services.cliente import get_clientes, get_cliente, post_cliente, update_cliente, delete_cliente, produtos_comprados,cliente_similar
+from carepilot_app.blueprints.restapi.services.cliente import get_clientes, get_cliente, post_cliente, update_cliente, delete_cliente, produtos_comprados,cliente_similar, get_movimentos
 from flask_restx import fields
 from flask import request
 
@@ -66,3 +66,11 @@ class ProdutosClientes(Resource):
         return cliente_similar(cliente_id)
     
    
+
+
+@api.route('/<int:cliente_id>/movimentos')
+class MovimentosCliente(Resource):
+    
+    @auth.login_required(role='admin')
+    def get(self, cliente_id):
+        return get_movimentos(cliente_id)
