@@ -1,6 +1,6 @@
 from flask import Flask
 from carepilot_app.extensions import configuration
-import dotenv
+import dotenv # type: ignore
 dotenv.load_dotenv()
 
 
