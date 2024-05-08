@@ -92,7 +92,6 @@ def produtos_comprados(cliente_id):
 
 
 
-
 def cliente_similar(cliente_id) :
     # return []
 
