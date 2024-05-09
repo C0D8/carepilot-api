@@ -20,15 +20,23 @@ def seed_data(df):
 
     #criar clientes
     clientes_unicos = df['cliente_id'].unique()
-    #quantidade de movimentos
-    quantidade = df['cliente_id'].value_counts()
-    #valor total
-    valor_total = df.groupby('cliente_id')['valor_total'].sum()
 
-    # Crie um DataFrame com os códigos dos clientes únicos
-    df_clientes = pd.DataFrame(clientes_unicos, columns=['id'])
-    df_clientes['quantidade'] = quantidade.values
-    df_clientes['valor_total'] = valor_total.values
+    # Criar DataFrame vazio para armazenar quantidade e valor total por cliente
+    dados_clientes = []
+
+    # Iterar sobre os clientes únicos
+    for cliente in clientes_unicos:
+        # Filtrar os dados apenas para o cliente atual
+        df_cliente = df[df['cliente_id'] == cliente]
+        # Contar o número de datas únicas para o cliente
+        quantidade_datas = df_cliente['data'].nunique()
+        # Somar o valor total para o cliente
+        valor_total = df_cliente['valor_total'].sum()
+        # Adicionar os dados do cliente à lista
+        dados_clientes.append({'id': cliente, 'quantidade': quantidade_datas, 'valor_total': valor_total})
+
+    # Criar DataFrame com os dados dos clientes
+    df_clientes = pd.DataFrame(dados_clientes)
     
 
     print("CLIENTESSSSS")
