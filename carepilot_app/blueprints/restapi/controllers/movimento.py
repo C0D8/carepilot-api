@@ -59,7 +59,7 @@ class Movimento(Resource):
     
    
 @api.route('/intervalo')
-class Movimento(Resource):
+class MovimentoIntervalo(Resource):
 
     @auth.login_required(role='admin')
     def get(self):
