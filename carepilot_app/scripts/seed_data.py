@@ -71,12 +71,6 @@ def seed_data(df):
     df.rename(columns={'valor_total': 'valor'}, inplace=True)
 
     df.to_sql('movimento', con=db.engine, if_exists='append', index=False)
-
-
-
-
-
     
-
     # #inserir movimentos
 

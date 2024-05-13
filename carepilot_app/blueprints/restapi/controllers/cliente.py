@@ -24,7 +24,10 @@ class Clientes(Resource):
 
     @auth.login_required(role='admin')
     def get(self):
-        return get_clientes()
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+        print(page, per_page)
+        return get_clientes(page, per_page)
     
     @auth.login_required(role='admin')
     @api.expect(item)
