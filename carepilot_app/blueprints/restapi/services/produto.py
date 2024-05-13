@@ -11,11 +11,20 @@ produto_schema = ProdutoSchema()
 movimento_schema = MovimentoSchema()
 list_movimentos = MovimentoSchema(many=True)
 
-def get_produtos():
-    produtos = Produto.find_all()
-    produtos = list_produtos.dump(produtos)
-    return produtos
+# def get_produtos():
+#     produtos = Produto.find_all()
+#     produtos = list_produtos.dump(produtos)
+#     return produtos
 
+def get_produtos(page, per_page):
+    prod = db.session.query(Produto).paginate(page=page, per_page=per_page)
+    
+    return{
+        "page": prod.page,
+        "per_page": prod.per_page,
+        "total_produtos": prod.total,
+        "produtos": list_produtos.dump(prod.items)
+    }
 
 def get_produto(produto_id):
     produto = Produto.find_by_id(produto_id)

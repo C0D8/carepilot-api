@@ -11,13 +11,13 @@ def get_movimentos():
     movimentos = list_movimentos.dump(movimentos)
     return movimentos
 
-
 def get_movimento(movimento_id):
     movimento = Movimento.find_by_id(movimento_id)
 
     if not movimento:
         return {"message": "movimento not found"}, 404
     movimento = movimento_schema.dump(movimento)
+    
     return movimento
 
 def post_movimento(data):
