@@ -60,32 +60,34 @@ def delete_produto(produto_id):
     produto.delete_from_db()
     return {"message": "Produto deleted"}, 200
 
-def product_cliente(product_id):
+def product_cliente(produto_id):
 
     movimentos = Movimento.find_all()
     movimentos = pd.DataFrame([movimento.json() for movimento in movimentos])
 
     df_produto = movimentos.groupby(["cliente_id", "produto_id"]).agg({'quantidade': 'sum'}).reset_index()
-    content = df_produto[df_produto["cod_produto"] == product_id]
-    content = content.drop("cod_produto", axis=1)
+    content = df_produto[df_produto["produto_id"] == produto_id]
+    content = content.drop("produto_id", axis=1)
     content = content.sort_values("quantidade", ascending=False)
     content = content.head(5)
     content.columns = ["Cliente", "Quantidade"]
 
     return content.to_dict(orient='records')
 
-def product_grafico(product_id):
+def product_grafico(produto_id):
 
     movimentos = Movimento.find_all()
     movimentos = pd.DataFrame([movimento.json() for movimento in movimentos])
     
-    content = movimentos[movimentos["cod_produto"] == product_id]
-    content = content.drop("cod_produto", axis=1)
-    content["data_documento"] = pd.to_datetime(content["data_documento"], format="%d/%m/%Y %H:%M:%S")
+    content = movimentos[movimentos["produto_id"] == produto_id]
+    content = content.drop("produto_id", axis=1)
+    content["data"] = pd.to_datetime(content["data"], format="%d/%m/%Y %H:%M:%S")
 
     # Agrupar por semana
-    content.set_index("data_documento", inplace=True)
+    content.set_index("data", inplace=True)
     content = content.resample('W').sum()
     content = content.reset_index()
+
+    content["data"] = content["data"].astype(str)
 
     return content.to_dict(orient='records')
