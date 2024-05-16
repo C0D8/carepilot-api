@@ -1,3 +1,4 @@
 /env
 /backEnv
 .env
+__pycache__
