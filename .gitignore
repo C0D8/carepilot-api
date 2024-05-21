@@ -1,3 +1,6 @@
 /env
 /backEnv
 .env
+__pycache__
+
+/carepilot_app/data/user_user_sim_matrix.csv
