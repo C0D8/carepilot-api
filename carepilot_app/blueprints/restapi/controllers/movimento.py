@@ -69,14 +69,14 @@ class MovimentoIntervalo(Resource):
 
         # Convertendo a data de documento para datetime
         df['data'] = pd.to_datetime(df['data'], format="%Y-%m-%d")
-
+        print(df.info)
         # Count the number of unique dates for each client
         date_counts = df.groupby('cliente_id')['data'].nunique()
-        valid_clients = date_counts[date_counts >= 5].index
+        valid_clients = date_counts[date_counts >= 1].index
 
         # Filter the dataframe to keep only the valid clients
         df = df[df['cliente_id'].isin(valid_clients)]
-
+        print(df.info())
         # Calculate the maximum time difference between data dates for each group
         df['time_diff'] = df.groupby('cliente_id')['data'].diff().dt.days
         df['max_time_diff'] = df.groupby('cliente_id')['time_diff'].transform('max')
