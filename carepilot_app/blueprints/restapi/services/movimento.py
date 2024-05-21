@@ -35,8 +35,6 @@ def update_movimento(movimento_id, data):
         setattr(movimento, key, value)
     movimento.update_to_db()
     return movimento_schema.dump(movimento), 200
-
-    
     
 
 def delete_movimento(movimento_id):

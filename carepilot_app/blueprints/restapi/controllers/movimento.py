@@ -4,6 +4,7 @@ from carepilot_app.blueprints.restapi.services.movimento import get_movimentos, 
 from flask_restx import fields
 from flask import request
 import pandas as pd
+import numpy as np
 
 api = Namespace('movimentos', description='Movimentos operations')
 
@@ -68,35 +69,19 @@ class MovimentoIntervalo(Resource):
 
         # Convertendo a data de documento para datetime
         df['data'] = pd.to_datetime(df['data'], format="%Y-%m-%d")
-
-        # Sort the dataframe by 'cliente_id' and 'data'
-        df.sort_values(['cliente_id', 'data'], inplace=True)
-
+        print(df.info)
         # Count the number of unique dates for each client
         date_counts = df.groupby('cliente_id')['data'].nunique()
-        # print("date counts")
-        # print(date_counts)
-        # print()
-        # Filter out clients with less than 10 unique dates
-        valid_clients = date_counts[date_counts >= 5].index
+        valid_clients = date_counts[date_counts >= 1].index
 
         # Filter the dataframe to keep only the valid clients
         df = df[df['cliente_id'].isin(valid_clients)]
-        # print(df.info())
-
-        temp = pd.DataFrame()
-        temp = df[["cliente_id", "data"]]
-        # print("temp")
-        # print(temp.info())
-        # print()
-        # Group temp by client code
-        grouped_temp = temp.groupby('cliente_id')
-
+        print(df.info())
         # Calculate the maximum time difference between data dates for each group
-        df = grouped_temp['data'].apply(lambda x: x.diff().max())
-        df = df.dt.days
-        # print("df")
-        # print(df.info())
-        # print(df.head())
-        
-        return df.to_list()
+        df['time_diff'] = df.groupby('cliente_id')['data'].diff().dt.days
+        df['max_time_diff'] = df.groupby('cliente_id')['time_diff'].transform('max')
+
+        # Get the maximum time difference for each client
+        max_time_diff = df.groupby('cliente_id')['max_time_diff'].first()
+
+        return max_time_diff.tolist()
