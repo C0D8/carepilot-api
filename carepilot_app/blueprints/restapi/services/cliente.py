@@ -63,7 +63,7 @@ def get_cliente(cliente_id):
     return cliente
 
 def post_cliente(data):
-    cliente = cliente_schema.load(data)
+    cliente = cliente_schema.load(data, session=db.session)
     cliente.save_to_db()
     return cliente_schema.dump(cliente), 201
 
