@@ -12,6 +12,7 @@ class Movimento(db.Model) :
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=True, default=1)
     produto_id = db.Column(db.Integer, db.ForeignKey('produto.id'), nullable=False)
     quantidade = db.Column(db.Integer, nullable=True, default=1)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 
     def json(self):

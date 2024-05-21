@@ -11,6 +11,7 @@ class Produto(db.Model) :
     data = db.Column(db.Date, nullable=True)
     descricao = db.Column(db.String(255), nullable=True)
     tipo = db.Column(db.String(255), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def json(self):
         return {"id": self.id, "valor": self.valor, "data": self.data, "descricao": self.descricao, "tipo": self.tipo}

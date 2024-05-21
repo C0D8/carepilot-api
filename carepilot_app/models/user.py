@@ -18,6 +18,10 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     roles = db.relationship('Role', secondary='user_roles',
                          backref='users', lazy='dynamic')
+    moviemntos = db.relationship('Movimento', backref='user', lazy=True)
+    clientes = db.relationship('Cliente', backref='user', lazy=True)
+    produtos = db.relationship('Produto', backref='user', lazy=True)
+    
 
     def json(self):
         return {"username": self.username, "password": self.password, "roles": self.roles, "id": self.id} 

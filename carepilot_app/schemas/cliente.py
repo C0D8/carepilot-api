@@ -7,3 +7,4 @@ class ClienteSchema(ma.SQLAlchemyAutoSchema):
         model = Cliente
         load_instance = True
         unknown = 'exclude'
+        include_fk = True

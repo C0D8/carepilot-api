@@ -20,9 +20,13 @@ class Seed(Resource):
     def post(self):
         # try:
         data = request.get_json(force=True)  # Force to parse data as JSON even if content type is not set to application/json
-        print(data)
+        # print(data)
+        #get no request param para pegar o id no usuario
+        
+        id_user = request.args.get("user_id")
+        print("ECHEI AQUI22222", id_user)
         df = pd.DataFrame.from_dict(data)
-        seed_data(df)
+        seed_data(df, id_user)
 
         #     df = pd.DataFrame(data)  # Construct DataFrame from JSON data
         #     seed_data(df)
