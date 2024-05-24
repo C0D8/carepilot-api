@@ -1,0 +1,4 @@
+cliente_id,recency,r_cluster,frequency,f_cluster,valor,vt_cluster,overall_score,segment_high,segment_low,predicted_range
+1,13,2,7,1,233.05,1,4,True,False,1
+1000003,7,0,2,2,47.5,2,4,True,False,1
+1000004,0,1,1,0,15.0,0,1,False,True,1

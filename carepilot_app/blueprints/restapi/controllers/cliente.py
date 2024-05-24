@@ -1,8 +1,10 @@
 from flask_restx import Resource, Namespace
+import pandas as pd
 from carepilot_app.extensions.auth import auth
 from carepilot_app.blueprints.restapi.services.cliente import get_clientes, get_cliente, post_cliente, update_cliente, delete_cliente, produtos_comprados,cliente_similar, get_movimentos
 from flask_restx import fields
 from flask import request
+import joblib
 
 
 api = Namespace('clientes', description='Clientes operations')
@@ -69,11 +71,27 @@ class ProdutosClientes(Resource):
         return cliente_similar(cliente_id)
     
    
-
-
 @api.route('/<int:cliente_id>/movimentos')
 class MovimentosCliente(Resource):
     
     @auth.login_required(role='admin')
     def get(self, cliente_id):
         return get_movimentos(cliente_id)
+    
+@api.route('/<int:cliente_id>/predict')
+class PredictCliente(Resource):
+    
+    @auth.login_required(role='admin')
+    def get(self, cliente_id):
+        movimentos = get_movimentos(cliente_id)
+        movimentos = pd.DataFrame(movimentos)
+
+        # merged_df = tratamento_de_dados(movimentos)
+
+
+        # Load the RFC model from the joblib file
+        rfc_model = joblib.load('path/to/rfc_model.joblib')
+        # Use the RFC model to make predictions
+        predictions = rfc_model.predict(X)
+
+        return predictions
