@@ -12,7 +12,16 @@ movimento_schema = MovimentoSchema()
 list_movimentos = MovimentoSchema(many=True)
 
 
-def get_clientes(page, per_page):
+def get_clientes(page, per_page, nome=None):
+    if nome:
+        clientes = db.session.query(Cliente).filter(Cliente.id == nome).paginate(page=page, per_page=per_page)
+        return {
+            "page": clientes.page,
+            "per_page": clientes.per_page,
+            "total_clientes": clientes.total,
+            "clientes": list_clientes.dump(clientes.items)
+        }
+    
     cleintes = db.session.query(Cliente).paginate(page=page, per_page=per_page)
     
     return{
@@ -22,6 +31,14 @@ def get_clientes(page, per_page):
         "clientes": list_clientes.dump(cleintes.items)
     }
     
+
+
+def get_all():
+    clientes = Cliente.find_all()
+    clientes = list_clientes.dump(clientes)
+    # print(clientes)
+    return clientes
+
 
 def get_movimentos(cliente_id): 
     cliente = Cliente.find_by_id(cliente_id)

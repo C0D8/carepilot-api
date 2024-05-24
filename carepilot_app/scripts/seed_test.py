@@ -5,7 +5,7 @@ from carepilot_app.models.produto import Produto
 from carepilot_app.models.movimento import Movimento
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
-from datetime import datetime
+
 def seed_data(df, user_id):
     Session = sessionmaker(bind=db.engine)
     session = Session()
@@ -50,15 +50,12 @@ def seed_data(df, user_id):
         for produto in produtos:
             movimento_produto = df[df['produto_id'] == produto].iloc[0]
             valor_unitario = movimento_produto['valor_total'] / movimento_produto['quantidade']
-            nome_produto = movimento_produto['descricao'] if 'descricao' in df.columns else 'Sem nome'
-            tipo_produto = movimento_produto['tipo_produto'] if 'tipo_produto' in df.columns else 'Sem tipo'
+            nome_produto = movimento_produto['nome_produto'] if 'nome_produto' in df.columns else None
             dados_produtos.append({
                 'id': produto,
                 'valor': valor_unitario,
                 'user_id': user_id,
-                'descricao': nome_produto,
-                'tipo': tipo_produto,
-                'data' : datetime.now().strftime('%Y-%m-%d')
+                'nome': nome_produto
             })
 
         df_produtos = pd.DataFrame(dados_produtos)

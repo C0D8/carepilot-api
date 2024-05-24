@@ -15,7 +15,8 @@ def auth_login(data):
     print(user)
 
     if user and check_password_hash(user.password, password):
-        return {"message": "Login successful"}, 200
+        return {"message": "Login successful",
+                "id_vendedor" : user.id}, 200
     else:
         return {"message": "Invalid credentials"}, 401
     

@@ -1,7 +1,7 @@
 from flask_restx import Resource, Namespace
 import pandas as pd
 from carepilot_app.extensions.auth import auth
-from carepilot_app.blueprints.restapi.services.cliente import get_clientes, get_cliente, post_cliente, update_cliente, delete_cliente, produtos_comprados,cliente_similar, get_movimentos
+from carepilot_app.blueprints.restapi.services.cliente import get_clientes, get_cliente, post_cliente, update_cliente, delete_cliente, produtos_comprados,cliente_similar, get_movimentos, get_all
 from flask_restx import fields
 from flask import request
 import joblib
@@ -28,8 +28,11 @@ class Clientes(Resource):
     def get(self):
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
-        print(page, per_page)
-        return get_clientes(page, per_page)
+        nome = request.args.get('search')
+        if nome == 'None':
+            nome = None
+        print(page, per_page, nome)
+        return get_clientes(page, per_page, nome)
     
     @auth.login_required(role='admin')
     @api.expect(item)
@@ -37,6 +40,15 @@ class Clientes(Resource):
         cliente_json = request.get_json()
         return post_cliente(cliente_json)
 
+
+@api.route('/all')
+class ClientesAll(Resource):
+        
+        @auth.login_required(role='admin')
+        def get(self):
+            return get_all()
+        
+    
 
 @api.route('/<int:cliente_id>')
 class Cliente(Resource):

@@ -11,6 +11,7 @@ class Cliente(db.Model) :
     movimentos = db.relationship('Movimento', backref='cliente', lazy=True)
     quantidade = db.Column(db.Integer, nullable=True)
     valor_total = db.Column(db.Float, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
                                  
     def json(self):
         return {"id": self.id, "nome": self.nome, "cpf": self.cpf, "data_nascimento": self.data_nascimento}

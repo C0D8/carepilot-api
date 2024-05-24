@@ -7,3 +7,5 @@ class ProdutoSchema (ma.SQLAlchemyAutoSchema):
         model = Produto
         load_instance = True
         unknown = 'exclude'
+        include_fk = True
+
