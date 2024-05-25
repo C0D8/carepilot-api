@@ -6,6 +6,7 @@ from carepilot_app.models.user import User, Role
 #import hashpassword 
 from werkzeug.security import generate_password_hash
 from flask import current_app
+from sqlalchemy import text
 load_dotenv()
 
 
@@ -24,6 +25,10 @@ def create_admin():
 def drop_db():
     """Cleans database"""
     db.drop_all()
+    query = text("DROP TABLE IF EXISTS alembic_version;")
+    with db.engine.connect() as connection:
+        connection.execute(query)
+        connection.close()
     print("Tables dropped")
 
 

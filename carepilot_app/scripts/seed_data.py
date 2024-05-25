@@ -61,12 +61,18 @@ def seed_data(df, user_id):
                 'data' : datetime.now().strftime('%Y-%m-%d')
             })
 
+        
+        print(dados_produtos)
         df_produtos = pd.DataFrame(dados_produtos)
+        # df_produtos.rename(columns={'tipo_produto': 'tipo'}, inplace=True)
         df_produtos.to_sql('produto', con=db.engine, if_exists='append', index=False)
 
         # Create movements
         df.rename(columns={'valor_total': 'valor'}, inplace=True)
         df['user_id'] = user_id
+        print(df)
+        #colunas para o movimento = ['data', 'quantidade', 'valor', 'cliente_id', 'produto_id', 'user_id']
+        df = df[['data', 'quantidade', 'valor', 'cliente_id', 'produto_id', 'user_id']]
         df.to_sql('movimento', con=db.engine, if_exists='append', index=False)
 
         session.commit()  # Commit all changes at the end
