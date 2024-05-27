@@ -40,10 +40,14 @@ def get_all():
     return clientes, 201
 
 def get_pred(cliente_id):
-    df = pd.read_csv('predictions.csv',sep=',')
-    print(df.head())
-    result = df[df["cliente_id"] == cliente_id]['predicted_range']
-    return int(result), 201
+    try:
+        df = pd.read_csv('predictions.csv',sep=',')
+        print(df.head())
+        result = df[df["cliente_id"] == cliente_id]['predicted_range']
+        return int(result), 201
+    except: 
+        print('fail')
+        return -1, 404
 
 def get_movimentos(cliente_id): 
     cliente = Cliente.find_by_id(cliente_id)

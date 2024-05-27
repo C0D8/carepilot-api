@@ -34,8 +34,8 @@ def tratamento_de_dados(movimentos):
     movimentos = movimentos.sort_values('month_num')
     # Split the data based on the calculated month numbers
     # filter the first half of the dataframe by amount of rows
-    df_first_half_months = movimentos[:len(movimentos)//2]
-    df_last_half_months = movimentos[len(movimentos)//2:]
+    df_first_half_months = movimentos[:len(movimentos)//4]
+    df_last_half_months = movimentos[len(movimentos)//4:]
     # print('first half')
     # print(df_first_half_months.head(10))
 
