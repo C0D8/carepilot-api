@@ -25,74 +25,25 @@ def tratamento_de_dados(movimentos):
     movimentos['valor'] = movimentos['valor'].astype(float)
     movimentos['valor'] = movimentos['valor'].fillna(0)
 
-    # Create a new column to represent the month number in the overall dataset
-    movimentos['month_num'] = ((movimentos['data'].dt.year - movimentos['data'].dt.year.min()) * 12 + 
-                            movimentos['data'].dt.month)
-    # print(movimentos['month_num'])
-    # print('original df')
-    # print(movimentos.info())
-    movimentos = movimentos.sort_values('month_num')
-    # Split the data based on the calculated month numbers
-    # filter the first half of the dataframe by amount of rows
-    df_first_half_months = movimentos[:len(movimentos)//4]
-    df_last_half_months = movimentos[len(movimentos)//4:]
-    # print('first half')
-    # print(df_first_half_months.head(10))
+    df_2023 = movimentos[movimentos['data'].dt.year == 2023]
 
-    # print('second half')
-    # print(df_last_half_months.head(10))
+    df_first_8_months = df_2023[df_2023['data'].dt.month <= 8]
+    df_last_4_months = df_2023[(df_2023['data'].dt.month > 8)]
+    # Create a dataframe with CustomerID and customers last purchase 
+    # date in the dataset ctm_bhvr_dt
+    last_purchase_8 = df_first_8_months.groupby('cliente_id').data.max().reset_index()
+    last_purchase_8.columns = ['cliente_id', 'max_date_first']
+    first_purchase_4 = df_last_4_months.groupby('cliente_id').data.min().reset_index()
+    first_purchase_4.columns = ['cliente_id', 'min_date_last']
 
-    print()
-    # previous code
-    # df_2023 = movimentos[movimentos['data'].dt.year == 2023]
-    # print(df_2023.info())
-    # df_first_half_months = df_2023[df_2023['data'].dt.month <= 8]
-    # df_last_half_months = df_2023[(df_2023['data'].dt.month > 8)]
-    ##
-
-
-    last_purchase = df_last_half_months.groupby('cliente_id').data.max().reset_index()
-    last_purchase.columns = ['cliente_id', 'max_date_first']
-    first_purchase = df_first_half_months.groupby('cliente_id').data.min().reset_index()
-    first_purchase.columns = ['cliente_id', 'min_date_last']
+    merged_df = pd.merge(first_purchase_4, last_purchase_8, on='cliente_id', how='left')
     
-    print('first_purchase')
-    print(first_purchase.head(10))
-    print('last_purchase')
-    print(last_purchase.head(10))
-    print()
-    # drop the clients on last purchase that do not appear on the first
-    last_purchase = last_purchase[last_purchase['cliente_id'].isin(first_purchase['cliente_id'])]
-    # create rows on last_purchase with valor = 0, data = now(), produto id = -1 quantidade = 0, month num = 0 and cliente_id equals to whatever is on the first but not on the second
-    missing_clients = first_purchase[~first_purchase['cliente_id'].isin(last_purchase['cliente_id'])]
-    missing_clients = missing_clients.drop('min_date_last', axis=1)
-    missing_clients['max_date_first'] = first_purchase["min_date_last"]
-    print('missing clients')
-    print(missing_clients.head())
-    last_purchase = pd.concat([last_purchase, missing_clients], ignore_index=True)
+    merged_df['next_purchase'] = (merged_df['min_date_last'] - merged_df['max_date_first']).dt.days
 
-    print("first_purchase\n")
-    print(first_purchase.head())
-    print(first_purchase.info())
-    
-    print('last purchase\n')
-    print(last_purchase.head())
-    print(last_purchase.info())
-    print()
-
-    merged_df = pd.merge(first_purchase, last_purchase, on='cliente_id', how='left')
-    print('merged df')
-    print(merged_df.head())
-    print(merged_df.info())
-    print()
-    merged_df['next_purchase'] = (merged_df['min_date_last'] - merged_df['max_date_first']).dt.days ## pau
-
-    merged_df['recency'] = first_purchase['min_date_last'].max() - first_purchase['min_date_last']
+    merged_df['recency'] = first_purchase_4['min_date_last'].max() - first_purchase_4['min_date_last']
 
     # Assuming the merged_df DataFrame contains the recency column
     X = merged_df[['recency']]
-
-    # Create an instance of the KMeans algorithm with the desired number of clusters
     kmeans = KMeans(n_clusters=3)
 
     # Fit the data to the KMeans algorithm
@@ -133,6 +84,7 @@ def tratamento_de_dados(movimentos):
     )
 
     # Assuming the merged_df DataFrame contains the recency column
+    
     X = merged_df[['valor']]
 
     # Create an instance of the KMeans algorithm with the desired number of clusters
@@ -240,7 +192,7 @@ class MovimentoTrain(Resource):
     def get(self):
         movimentos = get_movimentos()
         movimentos = pd.DataFrame(movimentos)
-        
+        movimentos = movimentos[['cliente_id', 'valor', 'produto_id', 'data', 'quantidade']]
         merged_df = tratamento_de_dados(movimentos)
         mcopy = merged_df.copy(deep=True)
         mcopy = pd.get_dummies(mcopy)
@@ -256,11 +208,6 @@ class MovimentoTrain(Resource):
         mcopy.loc[(mcopy.next_purchase > 15) & (mcopy.next_purchase <= 30), "next_purchase_day_range"] = 2
         mcopy.loc[(mcopy.next_purchase > 10) & (mcopy.next_purchase <= 15), "next_purchase_day_range"] = 1
 
-        corr_metrics = mcopy[mcopy.columns].corr()
-        corr_df = pd.DataFrame(corr_metrics.min())
-        corr_df.columns = ['min_corr_coef']
-        corr_df['max_corr_coef'] = corr_metrics[corr_metrics < 1].max()
-
         mcopy = mcopy.drop(columns=['min_date_last', 'max_date_first'])
 
         mcopy['recency'] = mcopy['recency'].dt.days.astype(int)
@@ -268,8 +215,6 @@ class MovimentoTrain(Resource):
         mcopy = mcopy.drop(columns=['next_purchase'], axis = 1)
 
         X, y = mcopy.drop(columns=['next_purchase_day_range'], axis = 1), mcopy.next_purchase_day_range
-        # X.to_csv('models/data/X.csv', sep=';', index=False)
-        # y.to_csv('models/data/y.csv', sep=';', index=False)
         
         # Split feature data X and target data y into train and test data
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None, shuffle=True)
@@ -281,10 +226,17 @@ class MovimentoTrain(Resource):
         accuracy = accuracy_score(y_test, predictions)
         print('resultadoooooo')
         print(accuracy)
+        print(X.head(), y.head())
 
-        pred = rfc.predict(X)
-        # merge pred with X again
-        merged_df['predicted_range'] = pred
-        merged_df = pd.concat([X, merged_df['predicted_range']], axis=1)
-        merged_df.to_csv('predictions.csv', index = False)
-        joblib.dump(rfc, 'rfc.joblib')
+        # Convertendo as predições para um DataFrame
+        predictions_df = pd.DataFrame(predictions, columns=['predictions'], index=X_test.index)
+
+        # Concatenando X_test e as predições
+        merged_df = pd.concat([X_test, predictions_df], axis=1)
+
+        # Exibindo as primeiras linhas do DataFrame resultante
+        print(merged_df.head())
+
+        merged_df.to_csv('predictions.csv' , sep=',')
+        # Save the trained RandomForestClassifier model to a file
+        joblib.dump(rfc, 'rfc_model.joblib')
