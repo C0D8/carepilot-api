@@ -12,9 +12,11 @@ class Cliente(db.Model) :
     quantidade = db.Column(db.Integer, nullable=True)
     valor_total = db.Column(db.Float, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    telefone = db.Column(db.String(11), nullable=True)
+    email = db.Column(db.String(255), nullable=True)
                                  
     def json(self):
-        return {"id": self.id, "nome": self.nome, "cpf": self.cpf, "data_nascimento": self.data_nascimento}
+        return {"id": self.id, "nome": self.nome, "cpf": self.cpf, "data_nascimento": self.data_nascimento, "telefone": self.telefone, "email": self.email}
     
     @classmethod
     def find_by_id(cls, id):
