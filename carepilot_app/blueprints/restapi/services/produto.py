@@ -16,8 +16,8 @@ list_movimentos = MovimentoSchema(many=True)
 #     produtos = list_produtos.dump(produtos)
 #     return produtos
 
-def get_produtos(page, per_page):
-    prod = db.session.query(Produto).paginate(page=page, per_page=per_page)
+def get_produtos(page, per_page, user_id=None):
+    prod = db.session.query(Produto).filter(Produto.user_id ==  user_id).paginate(page=page, per_page=per_page)
     
     return{
         "page": prod.page,

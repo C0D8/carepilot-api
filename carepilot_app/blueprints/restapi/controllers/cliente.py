@@ -27,10 +27,11 @@ class Clientes(Resource):
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
         nome = request.args.get('search')
+        usuario_id = request.args.get('usuario_id')
         if nome == 'None':
             nome = None
         print(page, per_page, nome)
-        return get_clientes(page, per_page, nome)
+        return get_clientes(page, per_page, nome, usuario_id)
     
     @auth.login_required(role='admin')
     @api.expect(item)

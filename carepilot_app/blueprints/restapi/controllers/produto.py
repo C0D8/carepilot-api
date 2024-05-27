@@ -29,8 +29,9 @@ class Produtos(Resource):
     def get(self):
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
+        user_id = request.args.get('user_id')
         print(page, per_page)
-        return get_produtos(page, per_page)
+        return get_produtos(page, per_page, user_id)
     
     @auth.login_required(role='admin')
     @api.expect(item)
