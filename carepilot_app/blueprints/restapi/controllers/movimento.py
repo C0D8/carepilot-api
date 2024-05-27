@@ -212,7 +212,9 @@ class MovimentoIntervalo(Resource):
     def get(self):
         movimentos = get_movimentos()
         df = pd.DataFrame(movimentos)
-
+        print(df.head())
+        # Drop rows where cliente_id is equal to 1
+        df = df[df['cliente_id'] != 1]
         # Convertendo a data de documento para datetime
         df['data'] = pd.to_datetime(df['data'], format="%Y-%m-%d")
 
@@ -226,7 +228,7 @@ class MovimentoIntervalo(Resource):
         # Calculate the maximum time difference between data dates for each group
         df['time_diff'] = df.groupby('cliente_id')['data'].diff().dt.days
         df['max_time_diff'] = df.groupby('cliente_id')['time_diff'].transform('max')
-
+        print(df.head())
         # Get the maximum time difference for each client
         max_time_diff = df.groupby('cliente_id')['max_time_diff'].first()
 
