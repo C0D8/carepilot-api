@@ -46,9 +46,10 @@ def get_similar_users(user_id):
         return "User not found"
     
     similar_users = user_user_sim_matrix.iloc[original_to_continuous_id[user_id]].sort_values(ascending=False).head(10)
-    # print(continuous_to_original_id.keys())
+    print("correlation fuckup")
+    print(continuous_to_original_id.keys())
     similar_users.index = similar_users.index.map(lambda x: continuous_to_original_id[float(x)])
     
     dict_users = similar_users.to_dict()
-    print(dict_users)
+    #print(dict_users)
     return dict_users

@@ -26,6 +26,11 @@ def get_produtos(page, per_page, user_id=None):
         "produtos": list_produtos.dump(prod.items)
     }
 
+def get_all_produtos():
+    produtos = Produto.find_all()
+    produtos = list_produtos.dump(produtos)
+    return produtos
+
 def get_produto(produto_id):
     produto = Produto.find_by_id(produto_id)
 

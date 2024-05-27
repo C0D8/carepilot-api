@@ -1,8 +1,6 @@
 from carepilot_app.extensions.db import db
 # from carepilot_app.models.movimento import Movimento
 
-
-
 class Produto(db.Model) :
     __tabelname__ = "produto"
 

@@ -1,8 +1,10 @@
 from flask_restx import Resource, Namespace
+import pandas as pd
 from carepilot_app.extensions.auth import auth
-from carepilot_app.blueprints.restapi.services.cliente import get_clientes, get_cliente, post_cliente, update_cliente, delete_cliente, produtos_comprados,cliente_similar, get_movimentos, get_all
+from carepilot_app.blueprints.restapi.services.cliente import get_clientes, get_cliente, get_pred, post_cliente, update_cliente, delete_cliente, produtos_comprados,cliente_similar, get_movimentos, get_all
 from flask_restx import fields
 from flask import request
+import joblib
 
 
 api = Namespace('clientes', description='Clientes operations')
@@ -82,11 +84,16 @@ class ProdutosClientes(Resource):
         return cliente_similar(cliente_id)
     
    
-
-
 @api.route('/<int:cliente_id>/movimentos')
 class MovimentosCliente(Resource):
     
     @auth.login_required(role='admin')
     def get(self, cliente_id):
         return get_movimentos(cliente_id)
+    
+@api.route('/<int:cliente_id>/predict')
+class PredictCliente(Resource):
+    
+    @auth.login_required(role='admin')
+    def get(self, cliente_id):
+        return get_pred(cliente_id)

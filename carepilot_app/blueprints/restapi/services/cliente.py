@@ -37,8 +37,17 @@ def get_all():
     clientes = Cliente.find_all()
     clientes = list_clientes.dump(clientes)
     # print(clientes)
-    return clientes
+    return clientes, 201
 
+def get_pred(cliente_id):
+    try:
+        df = pd.read_csv('predictions.csv',sep=',')
+        print(df.head())
+        result = df[df["cliente_id"] == cliente_id]['predicted_range']
+        return int(result), 201
+    except: 
+        print('fail')
+        return -1, 404
 
 def get_movimentos(cliente_id): 
     cliente = Cliente.find_by_id(cliente_id)
