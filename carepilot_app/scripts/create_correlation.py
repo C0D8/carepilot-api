@@ -38,10 +38,12 @@ def get_similar_users(user_id):
     if not os.path.exists('./carepilot_app/data/user_user_sim_matrix.csv'):
         create_correlation()
 
-
     user_user_sim_matrix = pd.read_csv('./carepilot_app/data/user_user_sim_matrix.csv', index_col=0)
     original_to_continuous_id = pd.read_csv('./carepilot_app/data/original_to_continuous_id.csv', header=None, index_col=0).squeeze("columns").to_dict()
     continuous_to_original_id = pd.read_csv('./carepilot_app/data/continuous_to_original_id.csv', header=None, index_col=0).squeeze("columns").to_dict()
+
+    if user_id not in original_to_continuous_id:
+        return "User not found"
     
     similar_users = user_user_sim_matrix.iloc[original_to_continuous_id[user_id]].sort_values(ascending=False).head(10)
     # print(continuous_to_original_id.keys())

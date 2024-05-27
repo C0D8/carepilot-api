@@ -37,6 +37,7 @@ class Movimentos(Resource):
     @api.expect(item)
     def post(self):
         movimento_json = request.get_json()
+        print(movimento_json)
         return post_movimento(movimento_json)
 
 
@@ -44,7 +45,7 @@ class Movimentos(Resource):
 class Movimento(Resource):
 
     @auth.login_required(role='admin')
-    def get(self, movimento_id):
+    def get(self, movimento_id): 
         return get_movimento(movimento_id)
     
     

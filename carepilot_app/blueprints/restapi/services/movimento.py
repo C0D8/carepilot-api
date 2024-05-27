@@ -1,6 +1,7 @@
 from carepilot_app.extensions.db import db #noqa
 from carepilot_app.models.movimento import Movimento
 from carepilot_app.schemas.movimento import MovimentoSchema
+from carepilot_app.models.cliente import Cliente
 
 list_movimentos = MovimentoSchema(many=True)
 movimento_schema = MovimentoSchema()
@@ -23,6 +24,12 @@ def get_movimento(movimento_id):
 def post_movimento(data):
     movimento = movimento_schema.load(data)
     movimento.save_to_db()
+    #atualizar o saldo do cliente
+    cliente = Cliente.find_by_id(movimento.cliente_id)
+    if cliente.valor_total is None:
+        cliente.valor_total = movimento.valor
+    else:
+        cliente.valor_total += movimento.valor
     return movimento_schema.dump(movimento), 201
 
 

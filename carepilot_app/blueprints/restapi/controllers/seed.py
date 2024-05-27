@@ -56,6 +56,9 @@ class SimilarUsers(Resource):
     def get(self, user_id):
         
         user = get_similar_users(user_id)
+        if user == "User not found":
+            return {"message": "User not found"}, 404
+        
         return {"message": "Similar users fetched",
                 "users": user}, 200
     
