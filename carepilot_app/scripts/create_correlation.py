@@ -20,10 +20,10 @@ def create_correlation():
     
     # Replace the customer_id in the dataframe with the continuous ID
     costumer_item_matrix = costumer_item_matrix.rename(index=original_to_continuous_id)
-    print(continuous_to_original_id[2])
+    # print(continuous_to_original_id[2])
     
     user_user_sim_matrix = pd.DataFrame(cosine_similarity(costumer_item_matrix))
-    print(user_user_sim_matrix)
+    # print(user_user_sim_matrix)
     
     # Save the similarity matrix and the two dictionaries
     user_user_sim_matrix.to_csv('./carepilot_app/data/user_user_sim_matrix.csv')
@@ -44,10 +44,10 @@ def get_similar_users(user_id):
 
     
     try :
-        print("Tentando achar o usuário de id : ", user_id)
+        # print("Tentando achar o usuário de id : ", user_id)
         similar_users = user_user_sim_matrix.iloc[original_to_continuous_id[user_id]].sort_values(ascending=False).head(10)
-        print("correlation fuckup")
-        print(continuous_to_original_id.keys())
+        # print("correlation fuckup")
+        # print(continuous_to_original_id.keys())
         similar_users.index = similar_users.index.map(lambda x: continuous_to_original_id[float(x)])
         
         dict_users = similar_users.to_dict()
