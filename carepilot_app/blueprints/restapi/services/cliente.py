@@ -37,7 +37,7 @@ def get_all():
     clientes = Cliente.find_all()
     clientes = list_clientes.dump(clientes)
     # print(clientes)
-    return clientes, 201
+    return clientes, 200
 
 def get_pred(cliente_id):
     try:

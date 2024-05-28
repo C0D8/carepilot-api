@@ -30,6 +30,8 @@ def post_movimento(data):
         cliente.valor_total = movimento.valor
     else:
         cliente.valor_total += movimento.valor
+    cliente.quantidade += 1
+    cliente.update_to_db()
     return movimento_schema.dump(movimento), 201
 
 
