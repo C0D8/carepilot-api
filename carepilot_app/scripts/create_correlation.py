@@ -42,14 +42,17 @@ def get_similar_users(user_id):
     original_to_continuous_id = pd.read_csv('./carepilot_app/data/original_to_continuous_id.csv', header=None, index_col=0).squeeze("columns").to_dict()
     continuous_to_original_id = pd.read_csv('./carepilot_app/data/continuous_to_original_id.csv', header=None, index_col=0).squeeze("columns").to_dict()
 
-    if user_id not in original_to_continuous_id:
+    
+    try :
+        print("Tentando achar o usuário de id : ", user_id)
+        similar_users = user_user_sim_matrix.iloc[original_to_continuous_id[user_id]].sort_values(ascending=False).head(10)
+        print("correlation fuckup")
+        print(continuous_to_original_id.keys())
+        similar_users.index = similar_users.index.map(lambda x: continuous_to_original_id[float(x)])
+        
+        dict_users = similar_users.to_dict()
+        #print(dict_users)
+        return dict_users
+    except Exception as e:
+        print(e)
         return "User not found"
-    
-    similar_users = user_user_sim_matrix.iloc[original_to_continuous_id[user_id]].sort_values(ascending=False).head(10)
-    print("correlation fuckup")
-    print(continuous_to_original_id.keys())
-    similar_users.index = similar_users.index.map(lambda x: continuous_to_original_id[float(x)])
-    
-    dict_users = similar_users.to_dict()
-    #print(dict_users)
-    return dict_users

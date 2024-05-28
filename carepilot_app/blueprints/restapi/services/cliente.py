@@ -43,9 +43,10 @@ def get_pred(cliente_id):
     try:
         df = pd.read_csv('predictions.csv',sep=',')
         print(df.head())
-        result = df[df["cliente_id"] == cliente_id]['predicted_range']
+        result = df[df["cliente_id"] == cliente_id]['predictions']
         return int(result), 201
-    except: 
+    except Exception as e: 
+        print(e)
         print('fail')
         return -1, 404
 
